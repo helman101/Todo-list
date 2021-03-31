@@ -1,3 +1,5 @@
+import projectModule from './project'
+
 const showButton = (object, content) => {
   const btn = document.createElement('button');
   btn.textContent = content;
@@ -20,9 +22,14 @@ const projectForm = () => {
   name.setAttribute('id', 'name');
   name.type = 'text';
 
-  const submit = document.createElement('input');
-  submit.type = 'submit';
-  submit.value = 'Submit';
+  const submit = document.createElement('button');
+  submit.addEventListener('click', (e) => {
+    e.preventDefault();
+    projectModule.createProject(name.value);
+    loadProjects(projectModule.getProjectsArray());
+    form.reset();
+  });
+  submit.textContent = 'Submit';
 
   form.appendChild(nameLabel);
   form.appendChild(name);
@@ -31,19 +38,26 @@ const projectForm = () => {
   return form;
 }
 
-const pageLoad = (projects) => {
-  let container = document.querySelector('#container');
-  const form = projectForm();
-  const projectButton = showButton(form, 'Project');
-  container.appendChild(projectButton);
-  container.appendChild(form);
-  let array = projects;
-  for (let i = 0; i < array.length; i++){
+const loadProjects = (projects) => {
+  let container = document.querySelector('#projects');
+  container.innerHTML = '';
+  for (let i = 0; i < projects.length; i++){
     let newDiv = document.createElement('div');
-    newDiv.textContent = array[i].name;
-    newDiv.style = 'height: 50px; width: 50px'
+    newDiv.textContent = projects[i].name;
     container.appendChild(newDiv);
   }
+}
+
+const pageLoad = (projects) => {
+  let container = document.querySelector('#container');
+  let projectDiv = document.createElement('div');
+  projectDiv.setAttribute('id', 'projects');
+  container.appendChild(projectDiv)
+  const form = projectForm();
+  const projectButton = showButton(form, 'Project');
+  loadProjects(projects);
+  container.appendChild(projectButton);
+  container.appendChild(form);
 }
 
 export default pageLoad
