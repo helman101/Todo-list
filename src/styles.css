@@ -13,3 +13,7 @@
 .content div {
   cursor: pointer;
 }
+
+.active {
+  background-color: red;
+}

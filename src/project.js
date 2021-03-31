@@ -1,7 +1,8 @@
 class Project {
-  constructor(name, list = []){
+  constructor(name, list = [], active = false){
     this.name = name;
     this.list = list;
+    this.active = active;
   }
 }
 
@@ -23,10 +24,18 @@ const projectModule = (() =>  {
   }
 
   const deleteProject = (index) => {
-    projectArray.splice(index, 1);
+    return  projectArray.splice(index, 1);
   }
 
-  return {createProject, getProjectsArray, deleteProject}
+  const getActive = () => {
+    for (let i = 0; i < projectArray.length; i++) {
+      if (projectArray[i].active) {
+        return i;
+      }
+    }
+  }
+
+  return {createProject, getProjectsArray, deleteProject, getActive}
 })();
 
 export default projectModule

@@ -9,5 +9,4 @@ let project = projectModule.createProject('Today');
 let projectTwo = projectModule.createProject('Monday');
 project.addTodo(todo);
 projectTwo.addTodo(todoTwo);
-console.log(project.list)
 pageLoad(projectModule.getProjectsArray());

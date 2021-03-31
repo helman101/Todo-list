@@ -23,7 +23,9 @@ const projectForm = () => {
   submit.addEventListener('click', (e) => {
     e.preventDefault();
     projectModule.createProject(name.value);
-    loadProjects(projectModule.getProjectsArray());
+    const arr = projectModule.getProjectsArray();
+    loadProjects(arr, arr.length-1);
+    loadTodo(arr.length-1);
     form.reset();
   });
   submit.textContent = 'Submit';
@@ -94,9 +96,8 @@ const loadTodo = (index) => {
   let projectArr = projectModule.getProjectsArray();
   todoDiv.innerHTML = ''
 
-  if(!projectArr[index]){ return }
+  if(projectArr.length === 0){ return }
   
-  console.log(projectArr[index])
   let list = projectArr[index].list;
   for (let i = 0; i < list.length; i++){
     let newDiv = document.createElement('div');
@@ -111,24 +112,45 @@ const loadTodo = (index) => {
   todoDiv.appendChild(todo);
 }
 
-const loadProjects = (projects) => {
+const loadProjects = (projects, active = 0) => {
   let projectDiv = document.querySelector('#projects');
   projectDiv.innerHTML = '';
   for (let i = 0; i < projects.length; i++){
     let newDiv = document.createElement('div');
+    projects[i].active = false;
+    if (i === active) {
+      projects[i].active = true;
+    }
     let projectSpan = document.createElement('span');
     let deleteProjectBtn = document.createElement('button');
     deleteProjectBtn.textContent = '-'
     deleteProjectBtn.addEventListener('click', () => {
-      projectModule.deleteProject(i);
-      loadProjects(projects)
-      loadTodo(i);
+      if (projects[i].active) {
+        projectModule.deleteProject(i);
+        loadProjects(projects);
+        loadTodo(0);
+      }
+      else {
+        projectModule.deleteProject(i);
+        loadProjects(projects, projectModule.getActive());
+      }
     })
     projectSpan.textContent = projects[i].name;
-    projectSpan.addEventListener('click', loadTodo.bind(this, i));
+    projectSpan.addEventListener('click', function() {
+      loadTodo(i);
+      setActive();
+      projects[i].active = true;
+    });
     newDiv.appendChild(deleteProjectBtn);
     newDiv.appendChild(projectSpan);
     projectDiv.appendChild(newDiv);
+  }
+}
+
+const setActive = () => {
+  const projects = projectModule.getProjectsArray();
+  for (let i = 0; i < projects.length; i++) {
+    projects[i].active = false;
   }
 }
 
