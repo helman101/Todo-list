@@ -1,4 +1,5 @@
 import projectModule from './project'
+import todoModule from './todo'
 
 const showButton = (object, content) => {
   const btn = document.createElement('button');
@@ -62,6 +63,17 @@ const todoForm = () => {
   const due = createInput('due', 'date');
   const priorityLabel = createLabel('priority');
   const priority = createInput('priority', 'number');
+  const btn = createInput('Submit', 'submit');
+  btn.value = 'Submit';
+
+  btn.addEventListener('click',  (e) => {
+    e.preventDefault();
+    let todo = todoModule.createTodo(title.value, description.value, due.value, priority.value);
+    let arr = projectModule.getProjectsArray();
+    arr[0].addTodo(todo);
+    loadProjects(projectModule.getProjectsArray());
+    form.reset();
+  });
 
   form.appendChild(titleLabel);
   form.appendChild(title);
@@ -71,33 +83,53 @@ const todoForm = () => {
   form.appendChild(due);
   form.appendChild(priorityLabel);
   form.appendChild(priority);
+  form.appendChild(btn);
 
   return form;
 }
 
+const loadTodo = (index) => {
+  let todoDiv = document.querySelector('#todo');
+  let projectArr = projectModule.getProjectsArray();
+  let list = projectArr[index].list;
+  todoDiv.innerHTML = ''
+  for (let i = 0; i < list.length; i++){
+    let newDiv = document.createElement('div');
+    newDiv.textContent = list[i].title;
+    todoDiv.appendChild(newDiv);
+  }
+}
+
 const loadProjects = (projects) => {
-  let container = document.querySelector('#projects');
-  container.innerHTML = '';
+  let projectDiv = document.querySelector('#projects');
+  projectDiv.innerHTML = '';
   for (let i = 0; i < projects.length; i++){
     let newDiv = document.createElement('div');
     newDiv.textContent = projects[i].name;
-    container.appendChild(newDiv);
+    newDiv.addEventListener('click', loadTodo.bind(this, i))
+    projectDiv.appendChild(newDiv);
   }
 }
 
 const pageLoad = (projects) => {
   let container = document.querySelector('#container');
+  let content = document.querySelector('.content');
+  content.classList.add('d-flex')
   let projectDiv = document.createElement('div');
+  let todoDiv = document.createElement('div');
   projectDiv.setAttribute('id', 'projects');
-  container.appendChild(projectDiv)
+  todoDiv.setAttribute('id', 'todo');
+  content.appendChild(projectDiv);
+  content.appendChild(todoDiv);
   const form = projectForm();
   const projectButton = showButton(form, 'Project');
   const todo = todoForm();
-  const todoButton = showButton(todo, 'Todo');
+  // const todoButton = showButton(todo, 'Todo');
   loadProjects(projects);
+  loadTodo(0);
   container.appendChild(projectButton);
   container.appendChild(form);
-  container.appendChild(todoButton);
+  // container.appendChild(todoButton);
   container.appendChild(todo);
 }
 
