@@ -5,6 +5,10 @@ class Project {
   }
 }
 
+Project.prototype.addTodo = function(todo) {
+  this.list.push(todo);
+}
+
 const projectModule = (() =>  {
   const projectArray = [];
 

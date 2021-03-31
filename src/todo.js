@@ -6,3 +6,14 @@ class Todo {
     this.priority = priority;
   }
 }
+
+const todoModule = (() => {
+  const createTodo = (title, description, dueDate, priority) => {
+    const newTodo = new Todo(title, description, dueDate, priority);
+    return newTodo;
+  };
+
+  return {createTodo};
+})();
+
+export default todoModule;
