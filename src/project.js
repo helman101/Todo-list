@@ -22,7 +22,11 @@ const projectModule = (() =>  {
     return projectArray
   }
 
-  return {createProject, getProjectsArray}
+  const deleteProject = (index) => {
+    projectArray.splice(index, 1);
+  }
+
+  return {createProject, getProjectsArray, deleteProject}
 })();
 
 export default projectModule

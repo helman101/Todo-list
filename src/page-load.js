@@ -89,10 +89,15 @@ const todoForm = (index) => {
 }
 
 const loadTodo = (index) => {
+
   let todoDiv = document.querySelector('#todo');
   let projectArr = projectModule.getProjectsArray();
-  let list = projectArr[index].list;
   todoDiv.innerHTML = ''
+
+  if(!projectArr[index]){ return }
+  
+  console.log(projectArr[index])
+  let list = projectArr[index].list;
   for (let i = 0; i < list.length; i++){
     let newDiv = document.createElement('div');
     newDiv.textContent = list[i].title;
@@ -111,8 +116,18 @@ const loadProjects = (projects) => {
   projectDiv.innerHTML = '';
   for (let i = 0; i < projects.length; i++){
     let newDiv = document.createElement('div');
-    newDiv.textContent = projects[i].name;
-    newDiv.addEventListener('click', loadTodo.bind(this, i))
+    let projectSpan = document.createElement('span');
+    let deleteProjectBtn = document.createElement('button');
+    deleteProjectBtn.textContent = '-'
+    deleteProjectBtn.addEventListener('click', () => {
+      projectModule.deleteProject(i);
+      loadProjects(projects)
+      loadTodo(i);
+    })
+    projectSpan.textContent = projects[i].name;
+    projectSpan.addEventListener('click', loadTodo.bind(this, i));
+    newDiv.appendChild(deleteProjectBtn);
+    newDiv.appendChild(projectSpan);
     projectDiv.appendChild(newDiv);
   }
 }
