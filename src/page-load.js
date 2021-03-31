@@ -101,7 +101,18 @@ const loadTodo = (index) => {
   let list = projectArr[index].list;
   for (let i = 0; i < list.length; i++){
     let newDiv = document.createElement('div');
-    newDiv.textContent = list[i].title;
+    let todoSpan = document.createElement('span');
+    let deleteTodoBtn = document.createElement('button');
+
+    deleteTodoBtn.textContent = '-';
+    deleteTodoBtn.addEventListener('click', () => {
+      todoModule.deleteTodo(list, i);
+      loadTodo(index);
+    })
+
+    todoSpan.textContent = list[i].title;
+    newDiv.appendChild(todoSpan)
+    newDiv.appendChild(deleteTodoBtn)
     todoDiv.appendChild(newDiv);
   }
   const btn = document.createElement('button');

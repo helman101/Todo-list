@@ -13,7 +13,11 @@ const todoModule = (() => {
     return newTodo;
   };
 
-  return {createTodo};
+  const deleteTodo = (list, index) => {
+    return  list.splice(index, 1);
+  }
+
+  return {createTodo, deleteTodo};
 })();
 
 export default todoModule;
