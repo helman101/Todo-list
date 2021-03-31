@@ -52,7 +52,7 @@ const createInput = (name, type) => {
   return input;
 }
 
-const todoForm = () => {
+const todoForm = (index) => {
   const form = document.createElement('form');
   form.classList.add('hidden');
   const titleLabel = createLabel('title');
@@ -70,8 +70,8 @@ const todoForm = () => {
     e.preventDefault();
     let todo = todoModule.createTodo(title.value, description.value, due.value, priority.value);
     let arr = projectModule.getProjectsArray();
-    arr[0].addTodo(todo);
-    loadProjects(projectModule.getProjectsArray());
+    arr[index].addTodo(todo);
+    loadTodo(index);
     form.reset();
   });
 
@@ -98,6 +98,12 @@ const loadTodo = (index) => {
     newDiv.textContent = list[i].title;
     todoDiv.appendChild(newDiv);
   }
+  const btn = document.createElement('button');
+  btn.textContent = '+';
+  const todo = todoForm(index);
+  btn.addEventListener('click', show.bind(this, todo));
+  todoDiv.appendChild(btn);
+  todoDiv.appendChild(todo);
 }
 
 const loadProjects = (projects) => {
@@ -123,14 +129,10 @@ const pageLoad = (projects) => {
   content.appendChild(todoDiv);
   const form = projectForm();
   const projectButton = showButton(form, 'Project');
-  const todo = todoForm();
-  // const todoButton = showButton(todo, 'Todo');
   loadProjects(projects);
   loadTodo(0);
   container.appendChild(projectButton);
   container.appendChild(form);
-  // container.appendChild(todoButton);
-  container.appendChild(todo);
 }
 
 export default pageLoad
