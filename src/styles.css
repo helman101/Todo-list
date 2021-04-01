@@ -55,6 +55,7 @@
   color: white;
   background-color: rgb(37, 37, 37);
   height: 100vh;
+  overflow-y: auto;
 }
 
 #projects .project {
