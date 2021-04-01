@@ -262,7 +262,7 @@ const pageLoad = (projects) => {
   const form = projectForm();
   const todo = todoForm();
   const projectButton = showButton(form, 'Project');
-  projectButton.classList.add('fixed', 'projectBtn');
+  projectButton.classList.add('fixed', 'projectBtn', 'pointer');
   container.appendChild(projectButton);
   formDiv.appendChild(form);
   formDiv.appendChild(todo);

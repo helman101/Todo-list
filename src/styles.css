@@ -42,6 +42,14 @@
   margin-bottom: 10px;
 }
 
+.m-top-10 {
+  margin-top: 10px;
+}
+
+.m-lef-10 {
+  margin-left: 10px;
+}
+
 .bold {
   font-weight: bold;
 }
@@ -100,6 +108,9 @@
 }
 
 .forms {
+  min-width: 15%;
+  min-height: 100vh;
+  background-color: lightgray;
   right: 0px;
   top:0;
   padding: 25px;
@@ -113,7 +124,16 @@
 }
 
 .projectBtn {
+  padding: 10px 15px;
+  color: white;
+  background-color: rgb(37, 37, 37);
+  border: none;
+  border-radius: 10px;
   bottom: 50px;
   right: 50px;
+  z-index: 100;
+}
 
+.projectBtn:focus {
+  outline: none;
 }
