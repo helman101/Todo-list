@@ -10,10 +10,20 @@
   margin-right: 10px;
 }
 
-.content div {
+.pointer {
   cursor: pointer;
 }
 
 .active {
   background-color: red;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.forms {
+  right: 0px;
+  top:0;
+  width: 30%;
 }

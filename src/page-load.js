@@ -15,8 +15,9 @@ const show = (object) => {
 const projectForm = () => {
   const form = document.createElement('form');
   form.classList.add('hidden');
+  const formTitle = document.createElement('h3');
+  formTitle.textContent = 'New Project';
   const nameLabel = createLabel('name');
-
   const name = createInput('name', 'text');
 
   const submit = document.createElement('button');
@@ -31,6 +32,7 @@ const projectForm = () => {
   });
   submit.textContent = 'Submit';
 
+  form.appendChild(formTitle);
   form.appendChild(nameLabel);
   form.appendChild(name);
   form.appendChild(submit);
@@ -55,9 +57,11 @@ const createInput = (name, type) => {
   return input;
 }
 
-const todoForm = (index) => {
+const todoForm = () => {
   const form = document.createElement('form');
-  form.classList.add('hidden');
+  form.classList.add('hidden', 'todo-form');
+  const formTitle = document.createElement('h3');
+  formTitle.textContent = 'New ToDo';
   const titleLabel = createLabel('title');
   const title = createInput('title', 'text');
   const descriptionLabel = createLabel('description');
@@ -73,12 +77,14 @@ const todoForm = (index) => {
     e.preventDefault();
     let todo = todoModule.createTodo(title.value, description.value, due.value, priority.value);
     let arr = projectModule.getProjectsArray();
+    const index = form.id;
     arr[index].addTodo(todo);
     loadTodo(index);
     form.reset();
     projectModule.saveLocal();
   });
 
+  form.appendChild(formTitle);
   form.appendChild(titleLabel);
   form.appendChild(title);
   form.appendChild(descriptionLabel);
@@ -95,17 +101,16 @@ const todoForm = (index) => {
 const loadTodoInfo = (todo, parent) => {
   if (parent.querySelector('.expanded')){
     let expanded = parent.querySelector('.expanded');
-    console.log(expanded)
     parent.removeChild(expanded);
   } else {
     let div = document.createElement('div');
-    div.classList.add('expanded')
+    div.classList.add('expanded');
     for (let elem in todo) {
       if (elem !== 'title') {
         let head = document.createElement('strong');
         let span = document.createElement('span');
-        head.textContent = `${elem}: `
-        span.textContent = `${todo[elem]}`
+        head.textContent = `${elem}: `;
+        span.textContent = `${todo[elem]}`;
         div.appendChild(head);
         div.appendChild(span);
       }
@@ -118,6 +123,7 @@ const loadTodo = (index) => {
 
   let todoDiv = document.querySelector('#todo');
   let projectArr = projectModule.getProjectsArray();
+  const forms = document.querySelector('.forms');
   todoDiv.innerHTML = ''
 
   if(projectArr.length === 0){ return }
@@ -134,7 +140,7 @@ const loadTodo = (index) => {
       loadTodo(index);
       projectModule.saveLocal();
     })
-
+    todoSpan.classList.add('pointer');
     todoSpan.textContent = list[i].title;
     todoSpan.addEventListener('click', loadTodoInfo.bind(this, list[i], newDiv))
     newDiv.appendChild(todoSpan)
@@ -142,11 +148,14 @@ const loadTodo = (index) => {
     todoDiv.appendChild(newDiv);
   }
   const btn = document.createElement('button');
+  btn.setAttribute('id', index);
   btn.textContent = '+';
-  const todo = todoForm(index);
-  btn.addEventListener('click', show.bind(this, todo));
+  btn.addEventListener('click', () => {
+    const todo = document.querySelector(".todo-form");
+    todo.setAttribute('id', index);
+    show(todo);
+  });
   todoDiv.appendChild(btn);
-  todoDiv.appendChild(todo);
 }
 
 const loadProjects = (projects, active = 0) => {
@@ -173,8 +182,11 @@ const loadProjects = (projects, active = 0) => {
       }
       projectModule.saveLocal();
     })
+    projectSpan.classList.add('pointer');
     projectSpan.textContent = projects[i].name;
     projectSpan.addEventListener('click', function() {
+      const todo = document.querySelector(".todo-form");
+      todo.classList.add('hidden');
       loadTodo(i);
       setActive();
       projects[i].active = true;
@@ -198,16 +210,21 @@ const pageLoad = (projects) => {
   content.classList.add('d-flex')
   let projectDiv = document.createElement('div');
   let todoDiv = document.createElement('div');
+  let formDiv = document.createElement('div');
+  formDiv.classList.add('forms', 'absolute');
   projectDiv.setAttribute('id', 'projects');
   todoDiv.setAttribute('id', 'todo');
   content.appendChild(projectDiv);
   content.appendChild(todoDiv);
   const form = projectForm();
+  const todo = todoForm();
   const projectButton = showButton(form, 'Project');
+  container.appendChild(projectButton);
+  formDiv.appendChild(form);
+  formDiv.appendChild(todo);
+  container.appendChild(formDiv);
   loadProjects(projects);
   loadTodo(0);
-  container.appendChild(projectButton);
-  container.appendChild(form);
 }
 
 export default pageLoad
