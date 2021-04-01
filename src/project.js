@@ -11,7 +11,7 @@ Project.prototype.addTodo = function(todo) {
 }
 
 const projectModule = (() =>  {
-  const projectArray = [];
+  let projectArray = [];
 
   const createProject = (name, list = []) => {
     let newProject = new Project(name, list);
@@ -35,7 +35,20 @@ const projectModule = (() =>  {
     }
   }
 
-  return {createProject, getProjectsArray, deleteProject, getActive}
+  const saveLocal = () => {
+    localStorage.projects = JSON.stringify(projectArray);
+  }
+
+  const loadLocal = () => {
+    if (localStorage.projects) {
+      projectArray = JSON.parse(localStorage.projects);
+      for (let i = 0; i < projectArray.length; i++){
+        Object.setPrototypeOf(projectArray[i], Project.prototype);
+      }
+    }
+  }
+
+  return {createProject, getProjectsArray, deleteProject, getActive, saveLocal, loadLocal}
 })();
 
 export default projectModule

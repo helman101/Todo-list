@@ -27,6 +27,7 @@ const projectForm = () => {
     loadProjects(arr, arr.length-1);
     loadTodo(arr.length-1);
     form.reset();
+    projectModule.saveLocal();
   });
   submit.textContent = 'Submit';
 
@@ -75,6 +76,7 @@ const todoForm = (index) => {
     arr[index].addTodo(todo);
     loadTodo(index);
     form.reset();
+    projectModule.saveLocal();
   });
 
   form.appendChild(titleLabel);
@@ -108,6 +110,7 @@ const loadTodo = (index) => {
     deleteTodoBtn.addEventListener('click', () => {
       todoModule.deleteTodo(list, i);
       loadTodo(index);
+      projectModule.saveLocal();
     })
 
     todoSpan.textContent = list[i].title;
@@ -145,6 +148,7 @@ const loadProjects = (projects, active = 0) => {
         projectModule.deleteProject(i);
         loadProjects(projects, projectModule.getActive());
       }
+      projectModule.saveLocal();
     })
     projectSpan.textContent = projects[i].name;
     projectSpan.addEventListener('click', function() {
