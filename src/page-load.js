@@ -14,6 +14,8 @@ const show = (object) => {
 
 const projectForm = () => {
   const form = document.createElement('form');
+  const wrapper = document.createElement('div');
+  wrapper.classList.add('d-flex', 'flex-column');
   form.classList.add('hidden');
   const formTitle = document.createElement('h3');
   formTitle.textContent = 'New Project';
@@ -32,10 +34,11 @@ const projectForm = () => {
   });
   submit.textContent = 'Submit';
 
-  form.appendChild(formTitle);
-  form.appendChild(nameLabel);
-  form.appendChild(name);
-  form.appendChild(submit);
+  wrapper.appendChild(formTitle);
+  wrapper.appendChild(nameLabel);
+  wrapper.appendChild(name);
+  wrapper.appendChild(submit);
+  form.appendChild(wrapper);
 
   return form;
 }
@@ -59,6 +62,8 @@ const createInput = (name, type) => {
 
 const todoForm = () => {
   const form = document.createElement('form');
+  const wrapper = document.createElement('div');
+  wrapper.classList.add('d-flex', 'flex-column');
   form.classList.add('hidden', 'todo-form');
   const formTitle = document.createElement('h3');
   formTitle.textContent = 'New ToDo';
@@ -84,16 +89,17 @@ const todoForm = () => {
     projectModule.saveLocal();
   });
 
-  form.appendChild(formTitle);
-  form.appendChild(titleLabel);
-  form.appendChild(title);
-  form.appendChild(descriptionLabel);
-  form.appendChild(description);
-  form.appendChild(dueLabel);
-  form.appendChild(due);
-  form.appendChild(priorityLabel);
-  form.appendChild(priority);
-  form.appendChild(btn);
+  wrapper.appendChild(formTitle);
+  wrapper.appendChild(titleLabel);
+  wrapper.appendChild(title);
+  wrapper.appendChild(descriptionLabel);
+  wrapper.appendChild(description);
+  wrapper.appendChild(dueLabel);
+  wrapper.appendChild(due);
+  wrapper.appendChild(priorityLabel);
+  wrapper.appendChild(priority);
+  wrapper.appendChild(btn);
+  form.appendChild(wrapper);
 
   return form;
 }
@@ -133,7 +139,7 @@ const loadTodo = (index) => {
     let newDiv = document.createElement('div');
     let todoSpan = document.createElement('span');
     let deleteTodoBtn = document.createElement('button');
-
+    deleteTodoBtn.classList.add('delete')
     deleteTodoBtn.textContent = '-';
     deleteTodoBtn.addEventListener('click', () => {
       todoModule.deleteTodo(list, i);
@@ -143,11 +149,12 @@ const loadTodo = (index) => {
     todoSpan.classList.add('pointer');
     todoSpan.textContent = list[i].title;
     todoSpan.addEventListener('click', loadTodoInfo.bind(this, list[i], newDiv))
-    newDiv.appendChild(todoSpan)
     newDiv.appendChild(deleteTodoBtn)
+    newDiv.appendChild(todoSpan)
     todoDiv.appendChild(newDiv);
   }
   const btn = document.createElement('button');
+  btn.classList.add('add')
   btn.setAttribute('id', index);
   btn.textContent = '+';
   btn.addEventListener('click', () => {
@@ -163,13 +170,16 @@ const loadProjects = (projects, active = 0) => {
   projectDiv.innerHTML = '';
   for (let i = 0; i < projects.length; i++){
     let newDiv = document.createElement('div');
+    newDiv.classList.add('d-flex');
     projects[i].active = false;
     if (i === active) {
       projects[i].active = true;
     }
-    let projectSpan = document.createElement('span');
+    let projectSpan = document.createElement('p');
+    projectSpan.classList.add('project');
     let deleteProjectBtn = document.createElement('button');
-    deleteProjectBtn.textContent = '-'
+    deleteProjectBtn.classList.add('delete');
+    deleteProjectBtn.textContent = 'X'
     deleteProjectBtn.addEventListener('click', () => {
       if (projects[i].active) {
         projectModule.deleteProject(i);
@@ -189,11 +199,20 @@ const loadProjects = (projects, active = 0) => {
       todo.classList.add('hidden');
       loadTodo(i);
       setActive();
+      setWhiteBg();
+      newDiv.classList.add('selected');
       projects[i].active = true;
     });
     newDiv.appendChild(deleteProjectBtn);
     newDiv.appendChild(projectSpan);
     projectDiv.appendChild(newDiv);
+  }
+}
+
+const setWhiteBg = () => {
+  const div = document.querySelectorAll('#projects div')
+  for (let i = 0; i < div.length; i++) {
+    div[i].classList.remove('selected')
   }
 }
 
