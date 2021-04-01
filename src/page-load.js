@@ -92,6 +92,28 @@ const todoForm = (index) => {
   return form;
 }
 
+const loadTodoInfo = (todo, parent) => {
+  if (parent.querySelector('.expanded')){
+    let expanded = parent.querySelector('.expanded');
+    console.log(expanded)
+    parent.removeChild(expanded);
+  } else {
+    let div = document.createElement('div');
+    div.classList.add('expanded')
+    for (let elem in todo) {
+      if (elem !== 'title') {
+        let head = document.createElement('strong');
+        let span = document.createElement('span');
+        head.textContent = `${elem}: `
+        span.textContent = `${todo[elem]}`
+        div.appendChild(head);
+        div.appendChild(span);
+      }
+    }
+    parent.appendChild(div);
+  }
+}
+
 const loadTodo = (index) => {
 
   let todoDiv = document.querySelector('#todo');
@@ -114,6 +136,7 @@ const loadTodo = (index) => {
     })
 
     todoSpan.textContent = list[i].title;
+    todoSpan.addEventListener('click', loadTodoInfo.bind(this, list[i], newDiv))
     newDiv.appendChild(todoSpan)
     newDiv.appendChild(deleteTodoBtn)
     todoDiv.appendChild(newDiv);
