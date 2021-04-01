@@ -19,6 +19,7 @@ const projectForm = () => {
   form.classList.add('hidden');
   const formTitle = document.createElement('h3');
   formTitle.textContent = 'New Project';
+  formTitle.classList.add('m-bot-10', 'bold', 'title');
   const nameLabel = createLabel('name');
   const name = createInput('name', 'text');
 
@@ -30,6 +31,9 @@ const projectForm = () => {
     loadProjects(arr, arr.length-1);
     loadTodo(arr.length-1);
     form.reset();
+    form.classList.add('hidden');
+    const todoForm = form.nextElementSibling;
+    todoForm.classList.add('hidden');
     projectModule.saveLocal();
   });
   submit.textContent = 'Submit';
@@ -56,6 +60,7 @@ const createLabel = (name) => {
 const createInput = (name, type) => {
   const input = document.createElement('input');
   input.setAttribute('id', `${name}`);
+  input.classList.add('m-bot-10');
   input.type = type;
   return input;
 }
@@ -66,7 +71,7 @@ const todoForm = () => {
   wrapper.classList.add('d-flex', 'flex-column');
   form.classList.add('hidden', 'todo-form');
   const formTitle = document.createElement('h3');
-  formTitle.textContent = 'New ToDo';
+  formTitle.classList.add('m-bot-10', 'bold', 'title');
   const titleLabel = createLabel('title');
   const title = createInput('title', 'text');
   const descriptionLabel = createLabel('description');
@@ -74,7 +79,9 @@ const todoForm = () => {
   const dueLabel = createLabel('due');
   const due = createInput('due', 'date');
   const priorityLabel = createLabel('priority');
-  const priority = createInput('priority', 'number');
+  const priority = createInput('priority', 'range');
+  priority.max = 4;
+  priority.min = 1;
   const btn = createInput('Submit', 'submit');
   btn.value = 'Submit';
 
@@ -112,24 +119,31 @@ const loadTodoInfo = (todo, parent) => {
     let div = document.createElement('div');
     div.classList.add('expanded');
     for (let elem in todo) {
-      if (elem !== 'title') {
-        let head = document.createElement('strong');
-        let span = document.createElement('span');
+      if (elem !== 'title' && elem !== 'priority') {
+        let head = document.createElement('p');
+        head.classList.add('bold');
+        let p = document.createElement('p');
+        p.classList.add('m-bot-10');
         head.textContent = `${elem}: `;
-        span.textContent = `${todo[elem]}`;
+        p.textContent = `${todo[elem]}`;
         div.appendChild(head);
-        div.appendChild(span);
+        div.appendChild(p);
       }
     }
     parent.appendChild(div);
   }
 }
 
+const pickColor = (number) => {
+  const colors = ['red', 'blue', 'yellow', 'black'];
+  return colors[number - 1];
+}
+
 const loadTodo = (index) => {
 
   let todoDiv = document.querySelector('#todo');
   let projectArr = projectModule.getProjectsArray();
-  const forms = document.querySelector('.forms');
+  //const forms = document.querySelector('.forms');
   todoDiv.innerHTML = ''
 
   if(projectArr.length === 0){ return }
@@ -137,7 +151,10 @@ const loadTodo = (index) => {
   let list = projectArr[index].list;
   for (let i = 0; i < list.length; i++){
     let newDiv = document.createElement('div');
-    let todoSpan = document.createElement('span');
+    newDiv.classList.add('m-bot-10');
+    const wrapper = document.createElement('div');
+    wrapper.classList.add('d-flex');
+    let todoTitle = document.createElement('p');
     let deleteTodoBtn = document.createElement('button');
     deleteTodoBtn.classList.add('delete')
     deleteTodoBtn.textContent = '-';
@@ -146,11 +163,16 @@ const loadTodo = (index) => {
       loadTodo(index);
       projectModule.saveLocal();
     })
-    todoSpan.classList.add('pointer');
-    todoSpan.textContent = list[i].title;
-    todoSpan.addEventListener('click', loadTodoInfo.bind(this, list[i], newDiv))
-    newDiv.appendChild(deleteTodoBtn)
-    newDiv.appendChild(todoSpan)
+    const priority = document.createElement('div');
+    priority.classList.add('priority');
+    priority.style.backgroundColor = pickColor(list[i].priority);
+    todoTitle.classList.add('pointer');
+    todoTitle.textContent = list[i].title;
+    todoTitle.addEventListener('click', loadTodoInfo.bind(this, list[i], newDiv))
+    wrapper.appendChild(deleteTodoBtn)
+    wrapper.appendChild(priority);
+    wrapper.appendChild(todoTitle)
+    newDiv.appendChild(wrapper);
     todoDiv.appendChild(newDiv);
   }
   const btn = document.createElement('button');
@@ -160,6 +182,8 @@ const loadTodo = (index) => {
   btn.addEventListener('click', () => {
     const todo = document.querySelector(".todo-form");
     todo.setAttribute('id', index);
+    const title = todo.querySelector('h3');
+    title.textContent = `New ${projectArr[index].name} Todo`;
     show(todo);
   });
   todoDiv.appendChild(btn);
@@ -238,6 +262,7 @@ const pageLoad = (projects) => {
   const form = projectForm();
   const todo = todoForm();
   const projectButton = showButton(form, 'Project');
+  projectButton.classList.add('fixed', 'projectBtn');
   container.appendChild(projectButton);
   formDiv.appendChild(form);
   formDiv.appendChild(todo);
