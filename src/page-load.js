@@ -321,7 +321,9 @@ const pageLoad = (projects) => {
   const formDiv = document.createElement('div');
   formDiv.classList.add('forms', 'absolute');
   projectDiv.setAttribute('id', 'projects');
+  projectDiv.classList.add('projects');
   todoDiv.setAttribute('id', 'todo');
+  todoDiv.classList.add('todo');
   content.appendChild(projectDiv);
   content.appendChild(todoDiv);
   const form = projectForm();
