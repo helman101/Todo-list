@@ -19,6 +19,10 @@ const projectModule = (() =>  {
     return newProject
   };
 
+  const setProjectsArray = (arr) => {
+    projectArray = arr;
+  }
+
   const getProjectsArray = () => {
     return projectArray
   }
@@ -35,20 +39,8 @@ const projectModule = (() =>  {
     }
   }
 
-  const saveLocal = () => {
-    localStorage.projects = JSON.stringify(projectArray);
-  }
-
-  const loadLocal = () => {
-    if (localStorage.projects) {
-      projectArray = JSON.parse(localStorage.projects);
-      for (let i = 0; i < projectArray.length; i++){
-        Object.setPrototypeOf(projectArray[i], Project.prototype);
-      }
-    }
-  }
-
-  return {createProject, getProjectsArray, deleteProject, getActive, saveLocal, loadLocal}
+  return {createProject, getProjectsArray, deleteProject, getActive, setProjectsArray}
 })();
 
 export default projectModule
+export {projectModule, Project};

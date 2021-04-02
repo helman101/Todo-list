@@ -1,5 +1,6 @@
 import projectModule from './project'
 import todoModule from './todo'
+import storageModule from './storage'
 
 const showButton = (object, content) => {
   const btn = document.createElement('button');
@@ -29,12 +30,12 @@ const projectForm = () => {
     projectModule.createProject(name.value);
     const arr = projectModule.getProjectsArray();
     loadProjects(arr, arr.length-1);
-    loadTodo(arr.length-1);
+    loadAllTodos(arr.length-1);
     form.reset();
     form.classList.add('hidden');
     const todoForm = form.nextElementSibling;
     todoForm.classList.add('hidden');
-    projectModule.saveLocal();
+    storageModule.saveLocal();
   });
   submit.textContent = 'Submit';
 
@@ -65,36 +66,25 @@ const createInput = (name, type) => {
   return input;
 }
 
-const todoForm = () => {
-  const form = document.createElement('form');
+const todoFields = (t = '', desc = '', dueDate = '', pr = '') => {
   const wrapper = document.createElement('div');
   wrapper.classList.add('d-flex', 'flex-column');
-  form.classList.add('hidden', 'todo-form');
   const formTitle = document.createElement('h3');
   formTitle.classList.add('m-bot-10', 'bold', 'title');
   const titleLabel = createLabel('title');
   const title = createInput('title', 'text');
+  title.value = t;
   const descriptionLabel = createLabel('description');
   const description = createInput('description', 'text');
+  description.value = desc;
   const dueLabel = createLabel('due');
   const due = createInput('due', 'date');
+  due.value = dueDate;
   const priorityLabel = createLabel('priority');
   const priority = createInput('priority', 'range');
+  priority.value = pr;
   priority.max = 4;
   priority.min = 1;
-  const btn = createInput('Submit', 'submit');
-  btn.value = 'Submit';
-
-  btn.addEventListener('click',  (e) => {
-    e.preventDefault();
-    let todo = todoModule.createTodo(title.value, description.value, due.value, priority.value);
-    let arr = projectModule.getProjectsArray();
-    const index = form.id;
-    arr[index].addTodo(todo);
-    loadTodo(index);
-    form.reset();
-    projectModule.saveLocal();
-  });
 
   wrapper.appendChild(formTitle);
   wrapper.appendChild(titleLabel);
@@ -105,21 +95,81 @@ const todoForm = () => {
   wrapper.appendChild(due);
   wrapper.appendChild(priorityLabel);
   wrapper.appendChild(priority);
-  wrapper.appendChild(btn);
-  form.appendChild(wrapper);
+
+  return wrapper;
+}
+
+const todoForm = () => {
+  const form = document.createElement('form');
+  form.classList.add('hidden', 'todo-form');
+  const formStructure = todoFields();
+  const btn = createInput('Submit', 'submit');
+  btn.value = 'Submit';
+
+  btn.addEventListener('click',  (e) => {
+    e.preventDefault();
+    let todo = todoModule.createTodo(title.value, description.value, due.value, priority.value);
+    let arr = projectModule.getProjectsArray();
+    const index = form.id;
+    arr[index].addTodo(todo);
+    loadAllTodos(index);
+    form.reset();
+    storageModule.saveLocal();
+  });
+
+  formStructure.appendChild(btn);
+  form.appendChild(formStructure);
 
   return form;
 }
 
-const loadTodoInfo = (todo, parent) => {
+const editForm = (list, i, element) => {
+  const form = document.createElement('form');
+  form.classList.add('todo-form');
+  const formStructure = todoFields(list[i].title, list[i].description, list[i].dueDate, list[i].priority);
+  const btn = createInput('Submit', 'submit');
+  btn.value = 'Submit';
+
+  btn.addEventListener('click',  (e) => {
+    e.preventDefault();
+    const title = form.querySelector('#title');
+    const desc = form.querySelector('#description');
+    const due = form.querySelector('#due');
+    const priority = form.querySelector('#priority');
+    list[i].edit(title.value, desc.value, due.value, priority.value);
+    const edited = loadTodo(list, i);
+    element.parentNode.insertBefore(edited, element);
+    element.parentNode.removeChild(element);
+    loadTodoInfo(list, i, edited);
+    storageModule.saveLocal();
+  });
+
+  formStructure.appendChild(btn);
+  form.appendChild(formStructure);
+
+  return form;
+}
+
+const edit = (list, i, parent) => {
+  const expanded = parent.querySelector('.expanded');
+  expanded.innerHTML = '';
+  const form = editForm(list, i, parent);
+  expanded.appendChild(form);
+}
+
+const loadTodoInfo = (list, i, parent) => {
+  const todo = list[i]
   if (parent.querySelector('.expanded')){
     let expanded = parent.querySelector('.expanded');
     parent.removeChild(expanded);
   } else {
     let div = document.createElement('div');
     div.classList.add('expanded');
+    const editBtn = document.createElement('button');
+    editBtn.addEventListener('click', edit.bind(this, list, i, parent));
+    editBtn.textContent = 'Edit'
     for (let elem in todo) {
-      if (elem !== 'title' && elem !== 'priority') {
+      if (elem !== 'title' && elem !== 'priority' && todo.hasOwnProperty(elem)) {
         let head = document.createElement('p');
         head.classList.add('bold');
         let p = document.createElement('p');
@@ -130,6 +180,7 @@ const loadTodoInfo = (todo, parent) => {
         div.appendChild(p);
       }
     }
+    div.appendChild(editBtn);
     parent.appendChild(div);
   }
 }
@@ -139,40 +190,44 @@ const pickColor = (number) => {
   return colors[number - 1];
 }
 
-const loadTodo = (index) => {
+const loadTodo = (list, index) => {
+  let newDiv = document.createElement('div');
+  newDiv.classList.add('m-bot-10');
+  const wrapper = document.createElement('div');
+  wrapper.classList.add('d-flex');
+  let todoTitle = document.createElement('p');
+  let deleteTodoBtn = document.createElement('button');
+  deleteTodoBtn.classList.add('delete')
+  deleteTodoBtn.textContent = '-';
+  deleteTodoBtn.addEventListener('click', () => {
+    todoModule.deleteTodo(list, index);
+    newDiv.parentNode.removeChild(newDiv);
+    storageModule.saveLocal();
+  })
+  const priority = document.createElement('div');
+  priority.classList.add('priority');
+  priority.style.backgroundColor = pickColor(list[index].priority);
+  todoTitle.classList.add('pointer');
+  todoTitle.textContent = list[index].title;
+  todoTitle.addEventListener('click', loadTodoInfo.bind(this, list, index, newDiv))
+  wrapper.appendChild(deleteTodoBtn)
+  wrapper.appendChild(priority);
+  wrapper.appendChild(todoTitle)
+  newDiv.appendChild(wrapper);
+  return newDiv;
+}
+
+const loadAllTodos = (index) => {
 
   let todoDiv = document.querySelector('#todo');
   let projectArr = projectModule.getProjectsArray();
-  //const forms = document.querySelector('.forms');
   todoDiv.innerHTML = ''
 
   if(projectArr.length === 0){ return }
   
   let list = projectArr[index].list;
   for (let i = 0; i < list.length; i++){
-    let newDiv = document.createElement('div');
-    newDiv.classList.add('m-bot-10');
-    const wrapper = document.createElement('div');
-    wrapper.classList.add('d-flex');
-    let todoTitle = document.createElement('p');
-    let deleteTodoBtn = document.createElement('button');
-    deleteTodoBtn.classList.add('delete')
-    deleteTodoBtn.textContent = '-';
-    deleteTodoBtn.addEventListener('click', () => {
-      todoModule.deleteTodo(list, i);
-      loadTodo(index);
-      projectModule.saveLocal();
-    })
-    const priority = document.createElement('div');
-    priority.classList.add('priority');
-    priority.style.backgroundColor = pickColor(list[i].priority);
-    todoTitle.classList.add('pointer');
-    todoTitle.textContent = list[i].title;
-    todoTitle.addEventListener('click', loadTodoInfo.bind(this, list[i], newDiv))
-    wrapper.appendChild(deleteTodoBtn)
-    wrapper.appendChild(priority);
-    wrapper.appendChild(todoTitle)
-    newDiv.appendChild(wrapper);
+    const newDiv = loadTodo(list, i);
     todoDiv.appendChild(newDiv);
   }
   const btn = document.createElement('button');
@@ -208,20 +263,20 @@ const loadProjects = (projects, active = 0) => {
       if (projects[i].active) {
         projectModule.deleteProject(i);
         loadProjects(projects);
-        loadTodo(0);
+        loadAllTodos(0);
       }
       else {
         projectModule.deleteProject(i);
         loadProjects(projects, projectModule.getActive());
       }
-      projectModule.saveLocal();
+      storageModule.saveLocal();
     })
     projectSpan.classList.add('pointer');
     projectSpan.textContent = projects[i].name;
     projectSpan.addEventListener('click', function() {
       const todo = document.querySelector(".todo-form");
       todo.classList.add('hidden');
-      loadTodo(i);
+      loadAllTodos(i);
       setActive();
       setWhiteBg();
       newDiv.classList.add('selected');
@@ -268,7 +323,7 @@ const pageLoad = (projects) => {
   formDiv.appendChild(todo);
   container.appendChild(formDiv);
   loadProjects(projects);
-  loadTodo(0);
+  loadAllTodos(0);
 }
 
 export default pageLoad
