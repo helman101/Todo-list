@@ -7,12 +7,12 @@ class Todo {
   }
 }
 
-Todo.prototype.edit = function(title, description, dueDate, priority){
+Todo.prototype.edit = function (title, description, dueDate, priority) {
   this.title = title;
   this.description = description;
   this.dueDate = dueDate;
   this.priority = priority;
-}
+};
 
 const todoModule = (() => {
   const createTodo = (title, description, dueDate, priority) => {
@@ -20,12 +20,10 @@ const todoModule = (() => {
     return newTodo;
   };
 
-  const deleteTodo = (list, index) => {
-    return  list.splice(index, 1);
-  }
+  const deleteTodo = (list, index) => list.splice(index, 1);
 
-  return {createTodo, deleteTodo};
+  return { createTodo, deleteTodo };
 })();
 
 export default todoModule;
-export {todoModule, Todo};
+export { todoModule, Todo };
