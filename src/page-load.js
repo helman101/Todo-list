@@ -124,7 +124,7 @@ const loadAllTodos = (index) => {
   btn.setAttribute('id', index);
   btn.textContent = '+';
   btn.addEventListener('click', () => {
-    const todo = document.querySelector('.todo-form');
+    const todo = document.querySelector('.forms .todo-form');
     todo.setAttribute('id', index);
     const title = todo.querySelector('h3');
     title.textContent = `New ${projectArr[index].name} Todo`;
@@ -186,7 +186,8 @@ const todoFields = (t = '', desc = '', dueDate = '', pr = '') => {
   const title = createInput('title', 'text');
   title.value = t;
   const descriptionLabel = createLabel('description');
-  const description = createInput('description', 'text');
+  const description = document.createElement('textarea');
+  description.setAttribute('id', 'description');
   description.value = desc;
   const dueLabel = createLabel('due');
   const due = createInput('due', 'date');
