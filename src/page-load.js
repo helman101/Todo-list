@@ -262,7 +262,7 @@ const loadProjects = (projects, active = 0) => {
     deleteProjectBtn.addEventListener('click', () => {
       if (projects[i].active) {
         projectModule.deleteProject(i);
-        loadProjects(projects);
+        projectDiv.removeChild(newDiv);
         loadAllTodos(0);
       }
       else {
