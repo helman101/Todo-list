@@ -1,0 +1,153 @@
+.hidden {
+  display: none;
+}
+
+.add {
+  color: white;
+  background-color: rgb(10, 175, 10);
+  border: none;
+}
+
+.add:focus {
+  outline: none;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.selected {
+  border: none;
+  background-color: white;
+  color: black;
+}
+
+.todo {
+  padding: 20px;
+}
+
+.todo button {
+  margin-right: 10px;
+}
+
+.forms form {
+  margin-bottom: 30px;
+}
+
+.fixed {
+  position: fixed;
+}
+
+.m-bot-10 {
+  margin-bottom: 10px;
+}
+
+.m-top-10 {
+  margin-top: 10px;
+}
+
+.m-lef-10 {
+  margin-left: 10px;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.title {
+  font-size: 1.2rem;
+}
+
+.projects {
+  margin-right: 10px;
+  color: white;
+  background-color: rgb(37, 37, 37);
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.project:hover {
+  color: black;
+  background-color: darkgray;
+}
+
+.projects .project {
+  padding-top: 10px;
+  font-size: 1.2rem;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  transition: 0.2s;
+}
+
+.delete {
+  border-bottom: 5px solid black;
+  border: none;
+  color: white;
+  font-weight: bold;
+  background-color: rgb(253, 78, 78);
+}
+
+.delete:focus {
+  outline: none;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.projects div {
+  width: 15vw;
+  height: 50px;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.active {
+  background-color: red;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.forms {
+  min-width: 15%;
+  min-height: 100vh;
+  background-color: lightgray;
+  right: 0;
+  top: 0;
+  padding: 25px;
+}
+
+.priority {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.projectBtn {
+  font-size: 1.2rem;
+  width: 100px;
+  padding: 10px 15px;
+  color: white;
+  background-color: rgb(37, 37, 37);
+  border: none;
+  border-radius: 10px;
+  bottom: 50px;
+  right: 50px;
+  z-index: 100;
+  transition: 0.2s;
+}
+
+.projectBtn:focus {
+  outline: none;
+}
+
+.projectBtn:hover {
+  color: black;
+  background-color: gray;
+}
