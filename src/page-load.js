@@ -340,3 +340,20 @@ const pageLoad = (projects) => {
 };
 
 export default pageLoad;
+export {show, 
+  showButton, 
+  createLabel, 
+  createInput, 
+  setWhiteBg, 
+  setActive, 
+  pickColor, 
+  loadTodoInfo, 
+  loadTodo, 
+  loadAllTodos, 
+  loadProjects, 
+  todoFields, 
+  todoForm, 
+  editForm, 
+  edit, 
+  projectForm, 
+  pageLoad};
