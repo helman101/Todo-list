@@ -107,8 +107,8 @@ const loadTodo = (list, index) => {
   return newDiv;
 };
 
-const loadAllTodos = (index) => {
-  const todoDiv = document.querySelector('#todo');
+const loadAllTodos = (index, div) => {
+  const todoDiv = div;
   const projectArr = project.getProjectsArray();
   todoDiv.innerHTML = '';
 
@@ -133,8 +133,9 @@ const loadAllTodos = (index) => {
   todoDiv.appendChild(btn);
 };
 
-const loadProjects = (projects, active = 0) => {
-  const projectDiv = document.querySelector('#projects');
+const loadProjects = (projects, active = 0, pDiv, tDiv) => {
+  const projectDiv = pDiv;
+  const todoDiv = tDiv;
   projectDiv.innerHTML = '';
   for (let i = 0; i < projects.length; i += 1) {
     const newDiv = document.createElement('div');
@@ -152,10 +153,10 @@ const loadProjects = (projects, active = 0) => {
       if (projects[i].active) {
         project.deleteProject(i);
         projectDiv.removeChild(newDiv);
-        loadAllTodos(0);
+        loadAllTodos(0, todoDiv);
       } else {
         project.deleteProject(i);
-        loadProjects(projects, project.getActive());
+        loadProjects(projects, project.getActive(), projectDiv, todoDiv);
       }
       storageModule.saveLocal();
     });
@@ -164,7 +165,7 @@ const loadProjects = (projects, active = 0) => {
     projectSpan.addEventListener('click', () => {
       const todo = document.querySelector('.todo-form');
       todo.classList.add('hidden');
-      loadAllTodos(i);
+      loadAllTodos(i, todoDiv);
       setActive();
       setWhiteBg();
       newDiv.classList.add('selected');
@@ -211,7 +212,8 @@ const todoFields = (t = '', desc = '', dueDate = '', pr = '') => {
   return wrapper;
 };
 
-const todoForm = () => {
+const todoForm = (tDiv) => {
+  const todoDiv = tDiv;
   const form = document.createElement('form');
   form.classList.add('hidden', 'todo-form');
   const formStructure = todoFields();
@@ -228,7 +230,7 @@ const todoForm = () => {
     const arr = project.getProjectsArray();
     const index = form.id;
     arr[index].addTodo(newtodo);
-    loadAllTodos(index);
+    loadAllTodos(index, todoDiv);
     form.reset();
     storageModule.saveLocal();
   });
@@ -278,7 +280,9 @@ const edit = (list, i, parent) => {
   expanded.appendChild(form);
 };
 
-const projectForm = () => {
+const projectForm = (pDiv, tDiv, todoF) => {
+  const projectDiv = pDiv;
+  const todoDiv = tDiv;
   const form = document.createElement('form');
   const wrapper = document.createElement('div');
   wrapper.classList.add('d-flex', 'flex-column');
@@ -294,11 +298,11 @@ const projectForm = () => {
     e.preventDefault();
     project.createProject(name.value);
     const arr = project.getProjectsArray();
-    loadProjects(arr, arr.length - 1);
-    loadAllTodos(arr.length - 1);
+    loadProjects(arr, arr.length - 1, projectDiv, todoDiv);
+    loadAllTodos(arr.length - 1, todoDiv);
     form.reset();
     form.classList.add('hidden');
-    const todoForm = form.nextElementSibling;
+    const todoForm = todoF;
     todoForm.classList.add('hidden');
     storageModule.saveLocal();
   });
@@ -327,16 +331,35 @@ const pageLoad = (projects) => {
   todoDiv.classList.add('todo');
   content.appendChild(projectDiv);
   content.appendChild(todoDiv);
-  const form = projectForm();
-  const todo = todoForm();
+  const todo = todoForm(todoDiv);
+  const form = projectForm(projectDiv, todoDiv, todo);
   const projectButton = showButton(form, 'Project');
   projectButton.classList.add('fixed', 'projectBtn', 'pointer');
   container.appendChild(projectButton);
   formDiv.appendChild(form);
   formDiv.appendChild(todo);
   container.appendChild(formDiv);
-  loadProjects(projects);
-  loadAllTodos(0);
+  loadProjects(projects, 0, projectDiv, todoDiv);
+  loadAllTodos(0, todoDiv);
 };
 
 export default pageLoad;
+export {
+  show,
+  showButton,
+  createLabel,
+  createInput,
+  setWhiteBg,
+  setActive,
+  pickColor,
+  loadTodoInfo,
+  loadTodo,
+  loadAllTodos,
+  loadProjects,
+  todoFields,
+  todoForm,
+  editForm,
+  edit,
+  projectForm,
+  pageLoad,
+};
