@@ -1,6 +1,6 @@
 import project from './project';
 import todo from './todo';
-import pageLoad from './page-load';
+import page from './page-load';
 import storageModule from './storage';
 import './reset.css';
 import './styles.css';
@@ -11,4 +11,4 @@ if (!localStorage.projects) {
   storageModule.loadLocal();
 }
 
-pageLoad(project.getProjectsArray());
+page(project.getProjectsArray());

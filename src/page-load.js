@@ -212,8 +212,8 @@ const todoFields = (t = '', desc = '', dueDate = '', pr = '') => {
   return wrapper;
 };
 
-const todoForm = () => {
-  const todoDiv = document.querySelector('#todo')
+const todoForm = (tDiv) => {
+  const todoDiv = tDiv;
   const form = document.createElement('form');
   form.classList.add('hidden', 'todo-form');
   const formStructure = todoFields();
@@ -280,9 +280,9 @@ const edit = (list, i, parent) => {
   expanded.appendChild(form);
 };
 
-const projectForm = () => {
-  const projectDiv = document.querySelector('#projects')
-  const todoDiv = document.querySelector('#todo')
+const projectForm = (pDiv, tDiv, todoF) => {
+  const projectDiv = pDiv;
+  const todoDiv = tDiv;
   const form = document.createElement('form');
   const wrapper = document.createElement('div');
   wrapper.classList.add('d-flex', 'flex-column');
@@ -302,7 +302,7 @@ const projectForm = () => {
     loadAllTodos(arr.length - 1, todoDiv);
     form.reset();
     form.classList.add('hidden');
-    const todoForm = form.nextElementSibling;
+    const todoForm = todoF;
     todoForm.classList.add('hidden');
     storageModule.saveLocal();
   });
@@ -331,8 +331,8 @@ const pageLoad = (projects) => {
   todoDiv.classList.add('todo');
   content.appendChild(projectDiv);
   content.appendChild(todoDiv);
-  const form = projectForm();
-  const todo = todoForm();
+  const todo = todoForm(todoDiv);
+  const form = projectForm(projectDiv, todoDiv, todo);
   const projectButton = showButton(form, 'Project');
   projectButton.classList.add('fixed', 'projectBtn', 'pointer');
   container.appendChild(projectButton);
@@ -344,20 +344,22 @@ const pageLoad = (projects) => {
 };
 
 export default pageLoad;
-export {show, 
-  showButton, 
-  createLabel, 
-  createInput, 
-  setWhiteBg, 
-  setActive, 
-  pickColor, 
-  loadTodoInfo, 
-  loadTodo, 
-  loadAllTodos, 
-  loadProjects, 
-  todoFields, 
-  todoForm, 
-  editForm, 
-  edit, 
-  projectForm, 
-  pageLoad};
+export {
+  show,
+  showButton,
+  createLabel,
+  createInput,
+  setWhiteBg,
+  setActive,
+  pickColor,
+  loadTodoInfo,
+  loadTodo,
+  loadAllTodos,
+  loadProjects,
+  todoFields,
+  todoForm,
+  editForm,
+  edit,
+  projectForm,
+  pageLoad,
+};

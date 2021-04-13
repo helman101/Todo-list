@@ -1,5 +1,5 @@
 import todo, { Todo } from '../src/todo';
-import projects, { Project } from '../src/project';
+import projects from '../src/project';
 
 let t;
 let project;
@@ -26,9 +26,9 @@ describe('createTodo', () => {
 describe('deleteTodo', () => {
   it('deletes a project from the given list with the given index', () => {
     todo.deleteTodo(project.list, 0);
-    expect(project.list.length).toBe(0)
-  })
-})
+    expect(project.list.length).toBe(0);
+  });
+});
 
 describe('edit', () => {
   it('replace todo information with the given arguments', () => {
@@ -37,7 +37,5 @@ describe('edit', () => {
     expect(t.description).toBe('example');
     expect(t.dueDate).toBe('01-12-5000');
     expect(t.priority).toBe(3);
-  })
-})
-
-
+  });
+});

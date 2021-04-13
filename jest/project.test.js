@@ -1,8 +1,7 @@
-import { describe, expect, it } from '@jest/globals';
 import projects, { Project } from '../src/project';
-import todo from '../src/todo'
+import todo from '../src/todo';
 
-let project
+let project;
 
 beforeAll(() => {
   project = projects.createProject('example');
@@ -12,15 +11,15 @@ describe('createProject', () => {
   it('Creates a project', () => {
     expect(project instanceof Project).toBe(true);
   });
-  
+
   it('Creates a project with the given name', () => {
     expect(project.name).toBe('example');
   });
-  
+
   it('Creates a project with an empty list of todos', () => {
     expect(project.list.length).toBe(0);
   });
-  
+
   it('Pushes the project in the projects array', () => {
     expect(projects.getProjectsArray().length).toBe(1);
   });
@@ -53,8 +52,8 @@ describe('getActive', () => {
 });
 
 describe('addTodo', () => {
-  it ('Adds a To do object in the list of the project', () => {
-    const t = todo.createTodo('title', 'description', '20-01-2021', 1)
+  it('Adds a To do object in the list of the project', () => {
+    const t = todo.createTodo('title', 'description', '20-01-2021', 1);
     project.addTodo(t);
     expect(project.list.length).toBe(1);
   });
